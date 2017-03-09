@@ -1,7 +1,14 @@
 *.class
+/**/.idea
+/**/.iml
+/**/.classpath
+/**/.eclipse
+/**/target
+/**/.project
+/**/.settings
+/**/coverage-error.log
+*.iml
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 *.jar
