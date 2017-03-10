@@ -17,4 +17,8 @@ public class PlayBoard {
     public PlayField getPlayField(final int x, final int y) {
         return playFields[x][y];
     }
+
+    public void setPlayField(final int x, final int y, final PlayField newPlayField) {
+        playFields[x][y] = newPlayField;
+    }
 }
