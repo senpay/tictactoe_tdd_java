@@ -60,5 +60,15 @@ public class PlayBoardTest {
         playBoard.setPlayField(x, y, PlayField.EMPTY);
         Assert.assertEquals(PlayField.EMPTY, playBoard.getPlayField(x, y));
     }
+
+    @Test
+    public void testEmptyBoardToString() {
+        PlayBoard playBoard = new PlayBoard();
+        final String expectedBoard = "[ . . . ]\n[ . . . ]\n[ . . . ]\n";
+        final String actualBoard = playBoard.toString();
+        Assert.assertNotNull(actualBoard);
+        Assert.assertEquals(expectedBoard, actualBoard);
+    }
+
 }
 

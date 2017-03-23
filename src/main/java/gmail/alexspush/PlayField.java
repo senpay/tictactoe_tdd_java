@@ -1,5 +1,18 @@
 package gmail.alexspush;
 
 public enum PlayField {
-    EMPTY, X, O;
+    EMPTY("."),
+    X("x"),
+    O("o");
+
+    private String strValue;
+
+    PlayField(final String strValue) {
+        this.strValue = strValue;
+    }
+
+    @Override
+    public String toString() {
+        return strValue;
+    }
 }

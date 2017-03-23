@@ -21,4 +21,19 @@ public class PlayBoard {
     public void setPlayField(final int x, final int y, final PlayField newPlayField) {
         playFields[x][y] = newPlayField;
     }
+
+    @Override
+    public String toString() {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int x = 0; x < 3; x++) {
+            stringBuffer.append("[");
+            for (int y = 0; y < 3; y++) {
+                stringBuffer.append(" ");
+
+                stringBuffer.append(playFields[x][y]);
+            }
+            stringBuffer.append(" ]\n");
+        }
+        return stringBuffer.toString();
+    }
 }
