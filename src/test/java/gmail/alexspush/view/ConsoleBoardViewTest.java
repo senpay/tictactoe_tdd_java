@@ -16,7 +16,7 @@ public class ConsoleBoardViewTest {
     public void testAddUserInputListener() {
         ConsoleBoardView view = new ConsoleBoardView();
         UserActionListener listener = () -> {};
-        view.addUsertInputListener(listener);
+        view.addUserInputListener(listener);
         Assert.assertEquals(listener, view.getInputListener());
     }
 

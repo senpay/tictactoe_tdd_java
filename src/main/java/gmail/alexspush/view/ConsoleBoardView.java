@@ -13,7 +13,7 @@ public class ConsoleBoardView implements BoardView {
     }
 
     @Override
-    public void addUsertInputListener(final UserActionListener userActionListener) {
+    public void addUserInputListener(final UserActionListener userActionListener) {
         this.userActionListener = userActionListener;
     }
 
