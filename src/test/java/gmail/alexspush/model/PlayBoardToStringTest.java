@@ -1,4 +1,4 @@
-package gmail.alexspush;
+package gmail.alexspush.model;
 
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;

@@ -1,4 +1,4 @@
-package gmail.alexspush;
+package gmail.alexspush.model;
 
 public enum PlayField {
     EMPTY("."),
