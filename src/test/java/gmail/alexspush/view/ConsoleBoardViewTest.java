@@ -50,8 +50,7 @@ public class ConsoleBoardViewTest {
     @Test
     public void testAddUserInputListener() {
         ConsoleBoardView view = new ConsoleBoardView();
-        UserActionListener listener = () -> {
-        };
+        UserActionListener listener = new UserActionListener() {};
         view.addUserInputListener(listener);
         Assert.assertEquals(listener, view.getInputListener());
     }
