@@ -36,5 +36,15 @@ public class GameController {
         public void moveActionPerformed(final int x, final int y, final Player player) {
             playBoard.setPlayField(x, y, player.getPlayFieldValue());
         }
+
+        @Override
+        public void newGameActionPerformed() {
+            playBoard.clean();
+        }
+
+        @Override
+        public void quitActionPerformed() {
+
+        }
     }
 }

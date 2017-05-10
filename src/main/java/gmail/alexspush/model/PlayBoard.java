@@ -7,11 +7,7 @@ public class PlayBoard {
     private PlayField[][] playFields = new PlayField[SIZE][SIZE];
 
     public PlayBoard() {
-        for (int x = 0; x < PlayBoard.SIZE; x++) {
-            for (int y = 0; y < PlayBoard.SIZE; y++) {
-                playFields[x][y] = PlayField.EMPTY;
-            }
-        }
+        clean();
     }
 
     public PlayField getPlayField(final int x, final int y) {
@@ -35,5 +31,13 @@ public class PlayBoard {
             stringBuffer.append(" ]\n");
         }
         return stringBuffer.toString();
+    }
+
+    public void clean() {
+        for (int x = 0; x < PlayBoard.SIZE; x++) {
+            for (int y = 0; y < PlayBoard.SIZE; y++) {
+                playFields[x][y] = PlayField.EMPTY;
+            }
+        }
     }
 }

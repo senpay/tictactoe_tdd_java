@@ -10,7 +10,7 @@ public class ConsoleBoardView implements BoardView {
     private OutputStream outputStream = System.out;
     private UserActionListener userActionListener;
 
-    public ConsoleBoardView(final OutputStream outputStream) {
+    ConsoleBoardView(final OutputStream outputStream) {
         this.outputStream = outputStream;
     }
 

@@ -5,6 +5,7 @@ import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.PlayField;
+import gmail.alexspush.model.Player;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +51,18 @@ public class ConsoleBoardViewTest {
     @Test
     public void testAddUserInputListener() {
         ConsoleBoardView view = new ConsoleBoardView();
-        UserActionListener listener = new UserActionListener() {};
+        UserActionListener listener = new UserActionListener() {
+            @Override
+            public void moveActionPerformed(final int x, final int y, final Player player) {
+            }
+            @Override
+            public void newGameActionPerformed() {
+            }
+            @Override
+            public void quitActionPerformed() {
+            }
+        };
+
         view.addUserInputListener(listener);
         Assert.assertEquals(listener, view.getInputListener());
     }
