@@ -3,15 +3,21 @@ package gmail.alexspush.view;
 import gmail.alexspush.model.PlayBoard;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ConsoleBoardView implements BoardView {
 
     private OutputStream outputStream = System.out;
+    private InputStream inputStream = System.in;
     private UserActionListener userActionListener;
 
     ConsoleBoardView(final OutputStream outputStream) {
         this.outputStream = outputStream;
+    }
+
+    ConsoleBoardView(final InputStream inputStream) {
+        this.inputStream = inputStream;
     }
 
     public ConsoleBoardView() {
@@ -23,6 +29,11 @@ public class ConsoleBoardView implements BoardView {
     }
 
     @Override
+    public void render() throws IOException {
+
+    }
+
+    @Override
     public void addUserInputListener(final UserActionListener userActionListener) {
         this.userActionListener = userActionListener;
     }
@@ -30,7 +41,6 @@ public class ConsoleBoardView implements BoardView {
     OutputStream getOutputStream() {
         return outputStream;
     }
-
 
     UserActionListener getInputListener() {
         return userActionListener;

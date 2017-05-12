@@ -3,12 +3,21 @@ package gmail.alexspush.model;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import gmail.alexspush.AssertUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(DataProviderRunner.class)
 public class PlayBoardTest {
+
+    private PlayBoard playBoard;
+
+    @Before
+    public void setUp() {
+        playBoard = new PlayBoard();
+    }
 
     @DataProvider
     public static Object[][] updateBoardPointsAndValues() {
@@ -21,7 +30,7 @@ public class PlayBoardTest {
 
     @Test
     public void testConstructor() {
-        PlayBoard playBoard = new PlayBoard();
+        AssertUtils.assertBoardEmpty(playBoard);
         for (int x = 0; x < PlayBoard.SIZE; x++) {
             for (int y = 0; y < PlayBoard.SIZE; y++) {
                 PlayField playField = playBoard.getPlayField(x, y);
@@ -32,9 +41,15 @@ public class PlayBoardTest {
     }
 
     @Test
+    public void testBoardClean() {
+        playBoard.setPlayField(1, 2, PlayField.X);
+        playBoard.clean();
+        AssertUtils.assertBoardEmpty(playBoard);
+    }
+
+    @Test
     @UseDataProvider("updateBoardPointsAndValues")
     public void testUpdateBoard(final int x, final int y, final PlayField newFieldValue) {
-        PlayBoard playBoard = new PlayBoard();
         //if testConstructor passes we will have all fields empty at this stage, so just updating field
         playBoard.setPlayField(x, y, newFieldValue);
         Assert.assertEquals(newFieldValue, playBoard.getPlayField(x, y));
@@ -52,7 +67,6 @@ public class PlayBoardTest {
 
     @Test
     public void testUpdateUpdatedBoard() {
-        PlayBoard playBoard = new PlayBoard();
         final int x = 1;
         final int y = 1;
         playBoard.setPlayField(x, y, PlayField.X);
@@ -63,7 +77,6 @@ public class PlayBoardTest {
 
     @Test
     public void testEmptyBoardToString() {
-        PlayBoard playBoard = new PlayBoard();
         final String expectedBoard = "[ . . . ]\n[ . . . ]\n[ . . . ]\n";
         final String actualBoard = playBoard.toString();
         Assert.assertNotNull(actualBoard);

@@ -18,7 +18,7 @@ public class GameController {
         this.boardView.addUserInputListener(this.userActionListener);
     }
 
-    UserActionListener getUserActionListener() {
+    public UserActionListener getUserActionListener() {
         return userActionListener;
     }
 
