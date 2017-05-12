@@ -77,7 +77,7 @@ public class ConsoleBoardViewTest {
         GameController controller = new GameController(playBoard, view);
         view.addUserInputListener(controller.getUserActionListener());
         view.render();
-        Assert.assertEquals(playBoard.getPlayField(1, 1), PlayField.X);
+        Assert.assertEquals(PlayField.X playBoard.getPlayField(1, 1));
     }
 
     private class TestInputStream extends InputStream {
