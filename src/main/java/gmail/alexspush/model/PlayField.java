@@ -5,7 +5,7 @@ public enum PlayField {
     X("x"),
     O("o");
 
-    private String strValue;
+    private final String strValue;
 
     PlayField(final String strValue) {
         this.strValue = strValue;

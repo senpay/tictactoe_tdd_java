@@ -4,7 +4,7 @@ public class PlayBoard {
 
     public static final int SIZE = 3;
 
-    private PlayField[][] playFields = new PlayField[SIZE][SIZE];
+    private final PlayField[][] playFields = new PlayField[SIZE][SIZE];
 
     public PlayBoard() {
         clean();
@@ -20,17 +20,17 @@ public class PlayBoard {
 
     @Override
     public String toString() {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         for (int x = 0; x < 3; x++) {
-            stringBuffer.append("[");
+            stringBuilder.append("[");
             for (int y = 0; y < 3; y++) {
-                stringBuffer.append(" ");
+                stringBuilder.append(" ");
 
-                stringBuffer.append(playFields[x][y]);
+                stringBuilder.append(playFields[x][y]);
             }
-            stringBuffer.append(" ]\n");
+            stringBuilder.append(" ]\n");
         }
-        return stringBuffer.toString();
+        return stringBuilder.toString();
     }
 
     public void clean() {

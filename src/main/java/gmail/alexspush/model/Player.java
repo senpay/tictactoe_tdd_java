@@ -4,7 +4,7 @@ public enum Player {
     X(PlayField.X),
     O(PlayField.O);
 
-    private PlayField playFieldValue;
+    private final PlayField playFieldValue;
 
     Player(final PlayField playFieldValue) {
         this.playFieldValue = playFieldValue;

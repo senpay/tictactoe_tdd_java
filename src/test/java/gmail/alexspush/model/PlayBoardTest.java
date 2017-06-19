@@ -48,6 +48,11 @@ public class PlayBoardTest {
     }
 
     @Test
+    public void testBoardStatus() {
+        //TODO: START here!!!
+    }
+
+    @Test
     @UseDataProvider("updateBoardPointsAndValues")
     public void testUpdateBoard(final int x, final int y, final PlayField newFieldValue) {
         //if testConstructor passes we will have all fields empty at this stage, so just updating field

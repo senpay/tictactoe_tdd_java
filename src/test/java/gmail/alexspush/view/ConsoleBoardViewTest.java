@@ -3,7 +3,9 @@ package gmail.alexspush.view;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import gmail.alexspush.AssertUtils;
 import gmail.alexspush.controller.GameController;
+import gmail.alexspush.controller.QuitException;
 import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.PlayField;
 import gmail.alexspush.model.Player;
@@ -30,7 +32,6 @@ public class ConsoleBoardViewTest {
     @Test
     public void testConstructor() {
         ConsoleBoardView view = new ConsoleBoardView();
-        Assert.assertTrue(view instanceof BoardView);
         Assert.assertEquals(System.out, view.getOutputStream());
     }
 
@@ -71,18 +72,51 @@ public class ConsoleBoardViewTest {
 
     @Test
     public void testUserMove() throws IOException {
-        TestInputStream testInputStream = new TestInputStream("11");
+        TestInputStream testInputStream = new TestInputStream("m12\n");
         ConsoleBoardView view = new ConsoleBoardView(testInputStream);
         PlayBoard playBoard = new PlayBoard();
         GameController controller = new GameController(playBoard, view);
         view.addUserInputListener(controller.getUserActionListener());
         view.render();
-        Assert.assertEquals(PlayField.X playBoard.getPlayField(1, 1));
+        Assert.assertEquals(PlayField.X, playBoard.getPlayField(1, 2));
+    }
+
+    @Test
+    public void testIncorrectUserCommand() throws IOException {
+        TestInputStream testInputStream = new TestInputStream("x12\n");
+        ConsoleBoardView view = new ConsoleBoardView(testInputStream);
+        PlayBoard playBoard = new PlayBoard();
+        GameController controller = new GameController(playBoard, view);
+        view.addUserInputListener(controller.getUserActionListener());
+        view.render();
+        AssertUtils.assertBoardEmpty(playBoard);
+    }
+
+    @Test
+    public void testUserNew() throws IOException {
+        TestInputStream testInputStream = new TestInputStream("n\n");
+        ConsoleBoardView view = new ConsoleBoardView(testInputStream);
+        PlayBoard playBoard = new PlayBoard();
+        playBoard.setPlayField(1, 2, PlayField.O);
+        GameController controller = new GameController(playBoard, view);
+        view.addUserInputListener(controller.getUserActionListener());
+        view.render();
+        AssertUtils.assertBoardEmpty(playBoard);
+    }
+
+    @Test(expected = QuitException.class)
+    public void testUserQuit() throws IOException {
+        TestInputStream testInputStream = new TestInputStream("q\n");
+        ConsoleBoardView view = new ConsoleBoardView(testInputStream);
+        PlayBoard playBoard = new PlayBoard();
+        GameController controller = new GameController(playBoard, view);
+        view.addUserInputListener(controller.getUserActionListener());
+        view.render();
     }
 
     private class TestInputStream extends InputStream {
 
-        private char[] inputStrChars;
+        private final char[] inputStrChars;
         private int counter;
 
         public TestInputStream(final String inputStr) {
@@ -93,7 +127,7 @@ public class ConsoleBoardViewTest {
         @Override
         public int read() throws IOException {
             if(counter < inputStrChars.length) {
-                return inputStrChars[counter];
+                return inputStrChars[counter++];
             } else {
                 return -1;
             }

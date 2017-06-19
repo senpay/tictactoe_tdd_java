@@ -7,9 +7,9 @@ import gmail.alexspush.view.UserActionListener;
 
 public class GameController {
 
-    private PlayBoard playBoard;
-    private BoardView boardView;
-    private UserActionListener userActionListener;
+    private final PlayBoard playBoard;
+    private final BoardView boardView;
+    private final UserActionListener userActionListener;
 
     public GameController(final PlayBoard playBoard, final BoardView boardView) {
         this.playBoard = playBoard;
@@ -22,6 +22,19 @@ public class GameController {
         return userActionListener;
     }
 
+    public void start() {
+        try {
+            while (true) {
+                boardView.render();
+                boardView.showBoard(playBoard);
+            }
+        } catch (Exception exception) {
+            System.out.println(exception);
+            System.exit(0);
+        }
+
+    }
+
 
     PlayBoard getPlayBoard() {
         return playBoard;
@@ -31,7 +44,7 @@ public class GameController {
         return boardView;
     }
 
-    public class ControllerUserActionListener implements UserActionListener{
+    public class ControllerUserActionListener implements UserActionListener {
         @Override
         public void moveActionPerformed(final int x, final int y, final Player player) {
             playBoard.setPlayField(x, y, player.getPlayFieldValue());
@@ -44,7 +57,7 @@ public class GameController {
 
         @Override
         public void quitActionPerformed() {
-
+            throw new QuitException("exiting from game");
         }
     }
 }
