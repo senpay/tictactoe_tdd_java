@@ -1,9 +1,12 @@
 package gmail.alexspush.controller;
 
+import gmail.alexspush.model.BoardStatus;
 import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.Player;
 import gmail.alexspush.view.BoardView;
 import gmail.alexspush.view.UserActionListener;
+
+import java.io.IOException;
 
 public class GameController {
 
@@ -22,13 +25,20 @@ public class GameController {
         return userActionListener;
     }
 
-    public void start() {
+    public void start() throws IOException {
         try {
             while (true) {
-                boardView.render();
-                boardView.showBoard(playBoard);
+                if (playBoard.getStatus() == BoardStatus.IN_PROGRESS) {
+                    boardView.render();
+                    boardView.showBoard(playBoard);
+                } else {
+                    boardView.showMessage("Game over: " + playBoard.getStatus().getStatusText() +
+                            " . Restarting game\n");
+                    playBoard.clean();
+                }
             }
         } catch (Exception exception) {
+            boardView.showMessage(exception.toString());
             System.out.println(exception);
             System.exit(0);
         }

@@ -25,7 +25,6 @@ public class PlayBoard {
             stringBuilder.append("[");
             for (int y = 0; y < 3; y++) {
                 stringBuilder.append(" ");
-
                 stringBuilder.append(playFields[x][y]);
             }
             stringBuilder.append(" ]\n");
@@ -39,5 +38,106 @@ public class PlayBoard {
                 playFields[x][y] = PlayField.EMPTY;
             }
         }
+    }
+
+    public BoardStatus getStatus() {
+        if (hasPlayerWon(Player.X)) {
+            return BoardStatus.XWINS;
+        } else if (hasPlayerWon(Player.O)) {
+            return BoardStatus.OWINS;
+        } else if (isDraw()) {
+            return BoardStatus.DRAW;
+        } else {
+            return BoardStatus.IN_PROGRESS;
+        }
+    }
+
+    private boolean isDraw() {
+        for (int x = 0; x < PlayBoard.SIZE; x++) {
+            for (int y = 0; y < PlayBoard.SIZE; y++) {
+                PlayField currentPlayField = getPlayField(x, y);
+                if (currentPlayField == PlayField.EMPTY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean hasPlayerWon(final Player player) {
+        return hasPlayerFilledAnyRow(player) || hasPlayerFilledAnyColumn(player) || hasPlayerFilledAnyDiagonal(player);
+    }
+
+    private boolean hasPlayerFilledAnyRow(final Player player) {
+        for (int x = 0; x < PlayBoard.SIZE; x++) {
+            boolean rawFilled = true;
+
+            for (int y = 0; y < PlayBoard.SIZE; y++) {
+                PlayField currentPlayField = getPlayField(x, y);
+                if (currentPlayField != player.getPlayFieldValue()) {
+                    rawFilled = false;
+                }
+            }
+
+            //If rawFilled is still true - that means raw contained only player's signs and we can return true
+            if (rawFilled) {
+                return true;
+            }
+        }
+        //If we haven't yet returned - then non row was filled with player's signs
+        return false;
+    }
+
+    private boolean hasPlayerFilledAnyColumn(final Player player) {
+        for (int y = 0; y < PlayBoard.SIZE; y++) {
+            boolean columnFilled = true;
+
+            for (int x = 0; x < PlayBoard.SIZE; x++) {
+                PlayField currentPlayField = getPlayField(x, y);
+                if (currentPlayField != player.getPlayFieldValue()) {
+                    columnFilled = false;
+                }
+            }
+
+            //If columnFilled is still true - that means column contained only player's signs and we can return true
+            if (columnFilled) {
+                return true;
+            }
+        }
+        //If we haven't yet returned - then non column was filled with player's signs
+        return false;
+    }
+
+    private boolean hasPlayerFilledAnyDiagonal(final Player player) {
+        boolean diagonalFilled = true;
+        for (int xy = 0; xy < PlayBoard.SIZE; xy++) {
+            PlayField currentPlayField = getPlayField(xy, xy);
+            if (currentPlayField != player.getPlayFieldValue()) {
+                diagonalFilled = false;
+            }
+        }
+
+        //If this is still true - than diagonal was filled, returning true
+        if (diagonalFilled) {
+            return true;
+        }
+
+        //If not returned yet - checking second diagonal
+        diagonalFilled = true;
+        for (int x = 0; x < PlayBoard.SIZE; x++) {
+            int y = (PlayBoard.SIZE - 1) - x;
+            PlayField currentPlayField = getPlayField(x, y);
+            if (currentPlayField != player.getPlayFieldValue()) {
+                diagonalFilled = false;
+            }
+        }
+
+        //If this is still true - than diagonal was filled, returning true
+        if (diagonalFilled) {
+            return true;
+        }
+
+        //If we haven't returned yet - than non diagonal was filled, returing false
+        return false;
     }
 }

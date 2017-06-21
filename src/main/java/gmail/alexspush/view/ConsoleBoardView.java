@@ -29,7 +29,7 @@ public class ConsoleBoardView implements BoardView {
 
     @Override
     public void showBoard(PlayBoard board) throws IOException {
-        outputStream.write(board.toString().getBytes());
+        writeString(board.toString());
     }
 
     @Override
@@ -44,6 +44,15 @@ public class ConsoleBoardView implements BoardView {
         } else if (command.startsWith("q")) {
             userActionListener.quitActionPerformed();
         }
+    }
+
+    @Override
+    public void showMessage(final String message) throws IOException {
+        writeString(message);
+    }
+
+    private void writeString(final String str) throws IOException {
+        outputStream.write(str.getBytes());
     }
 
     @Override

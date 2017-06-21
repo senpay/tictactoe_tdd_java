@@ -14,11 +14,6 @@ public class PlayBoardTest {
 
     private PlayBoard playBoard;
 
-    @Before
-    public void setUp() {
-        playBoard = new PlayBoard();
-    }
-
     @DataProvider
     public static Object[][] updateBoardPointsAndValues() {
         return new Object[][]{
@@ -26,6 +21,20 @@ public class PlayBoardTest {
                 {1, 1, PlayField.X},
                 {2, 2, PlayField.O}
         };
+    }
+
+    @DataProvider
+    public static Object[][] fromZeroToTwo() {
+        return new Object[][]{
+                {0},
+                {1},
+                {2}
+        };
+    }
+
+    @Before
+    public void setUp() {
+        playBoard = new PlayBoard();
     }
 
     @Test
@@ -48,8 +57,121 @@ public class PlayBoardTest {
     }
 
     @Test
-    public void testBoardStatus() {
-        //TODO: START here!!!
+    @UseDataProvider("fromZeroToTwo")
+    public void testBoardStatusXWinsVertical(final int x) {
+        //Set up X to win the game (horizontal)
+        for (int y = 0; y < PlayBoard.SIZE; y++) {
+            playBoard.setPlayField(x, y, PlayField.X);
+        }
+        Assert.assertEquals(BoardStatus.XWINS, playBoard.getStatus());
+    }
+
+    @Test
+    @UseDataProvider("fromZeroToTwo")
+    public void testBoardStatusOWinsHorizontal(final int y) {
+        //Set up O to win the game (vertical)
+        for (int x = 0; x < PlayBoard.SIZE; x++) {
+            playBoard.setPlayField(x, y, PlayField.O);
+        }
+        Assert.assertEquals(BoardStatus.OWINS, playBoard.getStatus());
+    }
+
+
+    @Test
+    public void testBoardStatusOWinsDiagonalTopLeft() {
+        //Set up O to win the game
+        //[ o . . ]
+        //[ . o . ]
+        //[ . . o ]
+        playBoard.setPlayField(0, 0, PlayField.O);
+        playBoard.setPlayField(1, 1, PlayField.O);
+        playBoard.setPlayField(2, 2, PlayField.O);
+        Assert.assertEquals(BoardStatus.OWINS, playBoard.getStatus());
+    }
+
+    @Test
+    public void testBoardStatusXWinsDiagonalTopRight() {
+        //Set up O to win the game
+        //[ . . x ]
+        //[ . x . ]
+        //[ x . . ]
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(2, 0, PlayField.X);
+        Assert.assertEquals(BoardStatus.XWINS, playBoard.getStatus());
+    }
+
+
+    @Test
+    public void testBoardStatusDraw() {
+        //Set up board filled but nobody won
+        //[ x o x ]
+        //[ o x o ]
+        //[ o x o ]
+        playBoard.setPlayField(0, 0, PlayField.X);
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 0, PlayField.O);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(1, 2, PlayField.O);
+        playBoard.setPlayField(2, 0, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+        playBoard.setPlayField(2, 2, PlayField.O);
+        Assert.assertEquals(BoardStatus.DRAW, playBoard.getStatus());
+    }
+
+    @Test
+    public void testBoardStatusInProgressTwoTwoEmpty() {
+        //Set up game in progress
+        //Set up board filled but nobody won
+        //[ x o x ]
+        //[ o x o ]
+        //[ o x . ]
+        playBoard.setPlayField(0, 0, PlayField.X);
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 0, PlayField.O);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(1, 2, PlayField.O);
+        playBoard.setPlayField(2, 0, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+        Assert.assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
+    }
+
+    @Test
+    public void testBoardStatusInProgressOneOneEmpty() {
+        //Set up game in progress
+        //Set up board filled but nobody won
+        //[ x o x ]
+        //[ o . o ]
+        //[ o x o ]
+        playBoard.setPlayField(0, 0, PlayField.X);
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 0, PlayField.O);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(2, 0, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+        playBoard.setPlayField(2, 2, PlayField.O);
+        Assert.assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
+    }
+
+    @Test
+    public void testBoardStatusInProgressZeroZeroEmpty() {
+        //Set up game in progress
+        //Set up board filled but nobody won
+        //[ . o x ]
+        //[ o x o ]
+        //[ o x o ]
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 0, PlayField.O);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(2, 0, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+        playBoard.setPlayField(2, 2, PlayField.O);
+        Assert.assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
     }
 
     @Test

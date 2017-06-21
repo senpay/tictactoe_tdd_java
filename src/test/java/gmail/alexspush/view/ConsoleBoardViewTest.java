@@ -45,8 +45,8 @@ public class ConsoleBoardViewTest {
         TestOutputStream testStream = new TestOutputStream();
         ConsoleBoardView view = new ConsoleBoardView(testStream);
         view.showBoard(playBoard);
-        String actualBoard = playBoard.toString();
-        Assert.assertNotNull(testStream.getWrittenOutput());
+        String actualBoard = testStream.getWrittenOutput();
+        Assert.assertNotNull(actualBoard);
         Assert.assertEquals(expectedBoard, actualBoard);
 
     }
@@ -102,6 +102,17 @@ public class ConsoleBoardViewTest {
         view.addUserInputListener(controller.getUserActionListener());
         view.render();
         AssertUtils.assertBoardEmpty(playBoard);
+    }
+
+    @Test
+    public void testShowMessage() throws IOException {
+        TestOutputStream testStream = new TestOutputStream();
+        ConsoleBoardView view = new ConsoleBoardView(testStream);
+        Exception exception = new Exception();
+        view.showMessage(exception.toString());
+        String actualExceptionMessage = testStream.getWrittenOutput();
+        Assert.assertNotNull(actualExceptionMessage);
+        Assert.assertEquals(exception.toString(), actualExceptionMessage);
     }
 
     @Test(expected = QuitException.class)
