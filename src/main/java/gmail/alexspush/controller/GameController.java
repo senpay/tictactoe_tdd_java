@@ -3,6 +3,9 @@ package gmail.alexspush.controller;
 import gmail.alexspush.model.BoardStatus;
 import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.Player;
+import gmail.alexspush.model.PlayerMove;
+import gmail.alexspush.model.ai.ComputerPlayer;
+import gmail.alexspush.model.ai.MiniMaxComputerPlayer;
 import gmail.alexspush.view.BoardView;
 import gmail.alexspush.view.UserActionListener;
 
@@ -25,6 +28,7 @@ public class GameController {
         return userActionListener;
     }
 
+    //This one of the methods that wasn't actually created using vanilla TDD...
     public void start() throws IOException {
         try {
             while (true) {
@@ -55,9 +59,15 @@ public class GameController {
     }
 
     public class ControllerUserActionListener implements UserActionListener {
+
+        //I am not sure if it clean to put it here, to be honest...
+        private ComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
+
         @Override
         public void moveActionPerformed(final int x, final int y, final Player player) {
             playBoard.setPlayField(x, y, player.getPlayFieldValue());
+            final PlayerMove computerPlayerMove = computerPlayer.getMove(playBoard);
+            playBoard.setPlayField(computerPlayerMove.x, computerPlayerMove.y, player.getRivalPlayFieldValue());
         }
 
         @Override

@@ -1,5 +1,11 @@
 package gmail.alexspush.model;
 
+import gmail.alexspush.model.ai.ComputerPlayer;
+import gmail.alexspush.model.ai.MiniMaxComputerPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayBoard {
 
     public static final int SIZE = 3;
@@ -64,6 +70,20 @@ public class PlayBoard {
         return true;
     }
 
+    public List<PlayerMove> getValidMoves() {
+        List<PlayerMove> validMoves = new ArrayList<>();
+        for (int x = 0; x < PlayBoard.SIZE; x++) {
+            for (int y = 0; y < PlayBoard.SIZE; y++) {
+                if(getPlayField(x, y) == PlayField.EMPTY) {
+                    validMoves.add(new PlayerMove(x, y));
+                }
+            }
+        }
+        return validMoves;
+    }
+
+
+
     private boolean hasPlayerWon(final Player player) {
         return hasPlayerFilledAnyRow(player) || hasPlayerFilledAnyColumn(player) || hasPlayerFilledAnyDiagonal(player);
     }
@@ -88,6 +108,7 @@ public class PlayBoard {
         return false;
     }
 
+    //TODO that method should be identical to rows but have different dimensions, right?
     private boolean hasPlayerFilledAnyColumn(final Player player) {
         for (int y = 0; y < PlayBoard.SIZE; y++) {
             boolean columnFilled = true;

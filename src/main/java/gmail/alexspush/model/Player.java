@@ -13,4 +13,11 @@ public enum Player {
     public PlayField getPlayFieldValue() {
         return playFieldValue;
     }
+
+    public PlayField getRivalPlayFieldValue() {
+        if (this == X) {
+            return O.getPlayFieldValue();
+        }
+        return X.getPlayFieldValue();
+    }
 }

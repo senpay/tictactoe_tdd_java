@@ -2,6 +2,7 @@ package gmail.alexspush.view;
 
 import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.Player;
+import gmail.alexspush.model.PlayerMove;
 
 import java.io.*;
 
@@ -32,13 +33,14 @@ public class ConsoleBoardView implements BoardView {
         writeString(board.toString());
     }
 
+    //This one of the methods that wasn't actually created using vanilla TDD...
     @Override
     public void render() throws IOException {
         String command = inputStreamReader.readLine();
         if (command.startsWith("m")) {
-            int x = Integer.valueOf(command.substring(1, 2));
-            int y = Integer.valueOf(command.substring(2, 3));
-            userActionListener.moveActionPerformed(x, y, Player.X);
+            final PlayerMove humanPlayerMove = getPlayerMoveFromCommand(command);
+            userActionListener.moveActionPerformed(humanPlayerMove.x, humanPlayerMove.y,
+                    Player.X);
         } else if (command.startsWith("n")) {
             userActionListener.newGameActionPerformed();
         } else if (command.startsWith("q")) {
@@ -70,5 +72,11 @@ public class ConsoleBoardView implements BoardView {
 
     private BufferedReader getBufferedReader(InputStream inputStream) {
         return new BufferedReader(new InputStreamReader(inputStream));
+    }
+
+    private PlayerMove getPlayerMoveFromCommand(final String commandStr) {
+        final short x = Short.valueOf(commandStr.substring(1, 2));
+        final short y = Short.valueOf(commandStr.substring(2, 3));
+        return new PlayerMove(x, y);
     }
 }

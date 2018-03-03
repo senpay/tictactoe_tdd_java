@@ -9,6 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(DataProviderRunner.class)
 public class PlayBoardTest {
 
@@ -43,10 +50,73 @@ public class PlayBoardTest {
         for (int x = 0; x < PlayBoard.SIZE; x++) {
             for (int y = 0; y < PlayBoard.SIZE; y++) {
                 PlayField playField = playBoard.getPlayField(x, y);
-                Assert.assertNotNull(playField);
-                Assert.assertEquals(PlayField.EMPTY, playField);
+                assertNotNull(playField);
+                assertEquals(PlayField.EMPTY, playField);
             }
         }
+    }
+
+    @Test
+    public void getValidMovesShouldReturnAllBoardInCaseBoardEmpty() throws Exception {
+        List<PlayerMove> validMoves = playBoard.getValidMoves();
+
+        assertNotNull(validMoves);
+        //creating list of valid moves...
+        final List<PlayerMove> expectedValidMoves = new ArrayList<>();
+        expectedValidMoves.add(new PlayerMove(0, 0));
+        expectedValidMoves.add(new PlayerMove(0, 1));
+        expectedValidMoves.add(new PlayerMove(0, 2));
+        expectedValidMoves.add(new PlayerMove(1, 0));
+        expectedValidMoves.add(new PlayerMove(1, 1));
+        expectedValidMoves.add(new PlayerMove(1, 2));
+        expectedValidMoves.add(new PlayerMove(2, 0));
+        expectedValidMoves.add(new PlayerMove(2, 1));
+        expectedValidMoves.add(new PlayerMove(2, 2));
+        assertEquals(expectedValidMoves, validMoves);
+    }
+
+    @Test
+    public void getValidMovesShouldReturnEmptyListIfNoMovesAvailable() throws Exception {
+        //[ x o x ]
+        //[ x x o ]
+        //[ o x o ]
+        playBoard.setPlayField(0, 0, PlayField.X);
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 0, PlayField.X);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(1, 2, PlayField.O);
+        playBoard.setPlayField(2, 0, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+        playBoard.setPlayField(2, 2, PlayField.O);
+
+        List<PlayerMove> validMoves = playBoard.getValidMoves();
+
+        assertNotNull(validMoves);
+        assertEquals(Collections.emptyList(), validMoves);
+    }
+
+    @Test
+    public void getValidMovesShouldReturnValidMoveIfBoardIsNotEmpty() throws Exception {
+        //[ . o x ]
+        //[ . x o ]
+        //[ o x . ]
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(1, 2, PlayField.X);
+        playBoard.setPlayField(2, 0, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+
+        List<PlayerMove> validMoves = playBoard.getValidMoves();
+
+        assertNotNull(validMoves);
+        //creating list of valid moves...
+        final List<PlayerMove> expectedValidMoves = new ArrayList<>();
+        expectedValidMoves.add(new PlayerMove(0, 0));
+        expectedValidMoves.add(new PlayerMove(1, 0));
+        expectedValidMoves.add(new PlayerMove(2, 2));
+        assertEquals(expectedValidMoves, validMoves);
     }
 
     @Test
@@ -63,7 +133,7 @@ public class PlayBoardTest {
         for (int y = 0; y < PlayBoard.SIZE; y++) {
             playBoard.setPlayField(x, y, PlayField.X);
         }
-        Assert.assertEquals(BoardStatus.XWINS, playBoard.getStatus());
+        assertEquals(BoardStatus.XWINS, playBoard.getStatus());
     }
 
     @Test
@@ -73,7 +143,7 @@ public class PlayBoardTest {
         for (int x = 0; x < PlayBoard.SIZE; x++) {
             playBoard.setPlayField(x, y, PlayField.O);
         }
-        Assert.assertEquals(BoardStatus.OWINS, playBoard.getStatus());
+        assertEquals(BoardStatus.OWINS, playBoard.getStatus());
     }
 
 
@@ -86,7 +156,7 @@ public class PlayBoardTest {
         playBoard.setPlayField(0, 0, PlayField.O);
         playBoard.setPlayField(1, 1, PlayField.O);
         playBoard.setPlayField(2, 2, PlayField.O);
-        Assert.assertEquals(BoardStatus.OWINS, playBoard.getStatus());
+        assertEquals(BoardStatus.OWINS, playBoard.getStatus());
     }
 
     @Test
@@ -98,7 +168,7 @@ public class PlayBoardTest {
         playBoard.setPlayField(0, 2, PlayField.X);
         playBoard.setPlayField(1, 1, PlayField.X);
         playBoard.setPlayField(2, 0, PlayField.X);
-        Assert.assertEquals(BoardStatus.XWINS, playBoard.getStatus());
+        assertEquals(BoardStatus.XWINS, playBoard.getStatus());
     }
 
 
@@ -117,7 +187,7 @@ public class PlayBoardTest {
         playBoard.setPlayField(2, 0, PlayField.O);
         playBoard.setPlayField(2, 1, PlayField.X);
         playBoard.setPlayField(2, 2, PlayField.O);
-        Assert.assertEquals(BoardStatus.DRAW, playBoard.getStatus());
+        assertEquals(BoardStatus.DRAW, playBoard.getStatus());
     }
 
     @Test
@@ -135,7 +205,7 @@ public class PlayBoardTest {
         playBoard.setPlayField(1, 2, PlayField.O);
         playBoard.setPlayField(2, 0, PlayField.O);
         playBoard.setPlayField(2, 1, PlayField.X);
-        Assert.assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
+        assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
     }
 
     @Test
@@ -153,7 +223,7 @@ public class PlayBoardTest {
         playBoard.setPlayField(2, 0, PlayField.O);
         playBoard.setPlayField(2, 1, PlayField.X);
         playBoard.setPlayField(2, 2, PlayField.O);
-        Assert.assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
+        assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
     }
 
     @Test
@@ -171,7 +241,7 @@ public class PlayBoardTest {
         playBoard.setPlayField(2, 0, PlayField.O);
         playBoard.setPlayField(2, 1, PlayField.X);
         playBoard.setPlayField(2, 2, PlayField.O);
-        Assert.assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
+        assertEquals(BoardStatus.IN_PROGRESS, playBoard.getStatus());
     }
 
     @Test
@@ -179,7 +249,7 @@ public class PlayBoardTest {
     public void testUpdateBoard(final int x, final int y, final PlayField newFieldValue) {
         //if testConstructor passes we will have all fields empty at this stage, so just updating field
         playBoard.setPlayField(x, y, newFieldValue);
-        Assert.assertEquals(newFieldValue, playBoard.getPlayField(x, y));
+        assertEquals(newFieldValue, playBoard.getPlayField(x, y));
         //testing that other values didn't change. Looks cumbersome, but still workable.
         for (int xx = 0; xx < PlayBoard.SIZE; xx++) {
             for (int yy = 0; yy < PlayBoard.SIZE; yy++) {
@@ -187,7 +257,7 @@ public class PlayBoardTest {
                     continue;
                 }
                 PlayField playField = playBoard.getPlayField(xx, yy);
-                Assert.assertEquals("is not empty field for x = " + xx + " y = " + yy, PlayField.EMPTY, playField);
+                assertEquals("is not empty field for x = " + xx + " y = " + yy, PlayField.EMPTY, playField);
             }
         }
     }
@@ -197,17 +267,17 @@ public class PlayBoardTest {
         final int x = 1;
         final int y = 1;
         playBoard.setPlayField(x, y, PlayField.X);
-        Assert.assertEquals(PlayField.X, playBoard.getPlayField(x, y));
+        assertEquals(PlayField.X, playBoard.getPlayField(x, y));
         playBoard.setPlayField(x, y, PlayField.EMPTY);
-        Assert.assertEquals(PlayField.EMPTY, playBoard.getPlayField(x, y));
+        assertEquals(PlayField.EMPTY, playBoard.getPlayField(x, y));
     }
 
     @Test
     public void testEmptyBoardToString() {
         final String expectedBoard = "[ . . . ]\n[ . . . ]\n[ . . . ]\n";
         final String actualBoard = playBoard.toString();
-        Assert.assertNotNull(actualBoard);
-        Assert.assertEquals(expectedBoard, actualBoard);
+        assertNotNull(actualBoard);
+        assertEquals(expectedBoard, actualBoard);
     }
 
 }
