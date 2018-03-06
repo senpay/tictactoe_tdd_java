@@ -32,8 +32,6 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
         return movesToAnalyze;
     }
 
-    //It may be possible to use lamdba here, although I don't know if it going to make
-    //thing more readable
     private static PlayerMove getMoveWithMaximumScore(final List<AnalyzedMove> analyzedMoves) {
         Optional<AnalyzedMove> bestMove =
                 analyzedMoves.stream().max((x, y) -> (x.getWeight() > y.getWeight()) ? 1 : -1);
@@ -45,26 +43,16 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
         return bestMove.get().getMove();
     }
 
-    //TODO: Horrible method, needs refactoring
     private static void analyzeMoves(final AnalyzedMove moveUnderAnalyzis, final PlayBoard playBoardStatusToAnalyze,
                                      final Player playerThatShouldWin, final Player currentPlayer, int depth) {
-        //Decrease weight for each iterationg for move
-        final Set<PlayerMove> validMoves = playBoardStatusToAnalyze.getValidMoves();
-        for (PlayerMove validMove : validMoves) {
-            final PlayBoard hypotheticalPlayBoard = new PlayBoard(playBoardStatusToAnalyze);
-            hypotheticalPlayBoard.setPlayField(validMove.x, validMove.y, currentPlayer.getPlayFieldValue());
+        for (PlayerMove validMove : playBoardStatusToAnalyze.getValidMoves()) {
+            final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(playBoardStatusToAnalyze, currentPlayer,
+                    validMove);
             final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
 
             if(hypotheticalBoardStatus != BoardStatus.IN_PROGRESS) {
-                if (hypotheticalBoardStatus.getWinner().isPresent() &&
-                        playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
-                    //We won
-                    moveUnderAnalyzis.setWeight(WEIGHT - depth);
-                } else if (hypotheticalBoardStatus.getWinner().isPresent() &&
-                        playerThatShouldWin != hypotheticalBoardStatus.getWinner().get()) {
-                    //We lost
-                    moveUnderAnalyzis.setWeight(depth - WEIGHT);
-                }
+                final int weight = assessMoveWeight(hypotheticalBoardStatus, playerThatShouldWin, depth);
+                moveUnderAnalyzis.setWeight(weight);
                 //game is over, no need for further analysis
                 return;
             }
@@ -83,16 +71,13 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
 
     private void analyzeMoves(final PlayBoard currentPlayBoard, final Player playerThatShouldWin) {
         for (AnalyzedMove moveToAnalyze : movesToAnalyze) {
-            final PlayBoard hypotheticalPlayBoard = new PlayBoard(currentPlayBoard);
-            final PlayerMove playerMove = moveToAnalyze.getMove();
-            hypotheticalPlayBoard.setPlayField(playerMove.x, playerMove.y,
-                    playerThatShouldWin.getPlayFieldValue());
+            final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard, playerThatShouldWin,
+                    moveToAnalyze.getMove());
             final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
 
-            if (hypotheticalBoardStatus.getWinner().isPresent() &&
-                    playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
-                //We won
-                moveToAnalyze.setWeight(WEIGHT);
+            if (hypotheticalBoardStatus != BoardStatus.IN_PROGRESS) {
+                final int weight = assessMoveWeight(hypotheticalBoardStatus, playerThatShouldWin);
+                moveToAnalyze.setWeight(weight);
                 //game is over, no need for further analysis
                 return;
             }
@@ -102,6 +87,30 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
                     playerThatShouldWin.getRival(), 1);
 
         }
+    }
+
+    private static int assessMoveWeight(final BoardStatus boardStatus,
+                                  final Player playerThatShouldWin, int depth) {
+        if (boardStatus.hasPlayerWon(playerThatShouldWin)) {
+            //We won
+            return (WEIGHT - depth);
+        } else if (boardStatus.hasPlayerWon(playerThatShouldWin.getRival())) {
+            //We lost
+            return (depth - WEIGHT);
+        }
+        //draw
+        return 0;
+    }
+
+    private static int assessMoveWeight(final BoardStatus boardStatus, final Player playerThatShouldWin) {
+        return assessMoveWeight(boardStatus, playerThatShouldWin, 0);
+    }
+
+    private static PlayBoard getHypatheticalPlayBoard(final PlayBoard currentPlayBoard, final Player playerToMakeMove,
+                                               final PlayerMove nextMove) {
+        final PlayBoard hypotheticalPlayBoard = new PlayBoard(currentPlayBoard);
+        hypotheticalPlayBoard.setPlayField(nextMove.x, nextMove.y, playerToMakeMove.getPlayFieldValue());
+        return hypotheticalPlayBoard;
     }
 
 }

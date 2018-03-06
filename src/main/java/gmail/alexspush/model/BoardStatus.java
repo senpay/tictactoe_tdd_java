@@ -23,7 +23,7 @@ public enum BoardStatus {
         return statusText;
     }
 
-    public Optional<Player> getWinner() {
-        return winner;
+    public boolean hasPlayerWon(final Player player) {
+        return winner.isPresent() && winner.get().equals(player);
     }
 }
