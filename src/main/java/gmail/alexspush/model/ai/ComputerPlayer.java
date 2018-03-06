@@ -1,6 +1,7 @@
 package gmail.alexspush.model.ai;
 
 import gmail.alexspush.model.PlayBoard;
+import gmail.alexspush.model.Player;
 import gmail.alexspush.model.PlayerMove;
 
 /**
@@ -10,6 +11,6 @@ import gmail.alexspush.model.PlayerMove;
  */
 public interface ComputerPlayer {
 
-    PlayerMove getMove(final PlayBoard playBoard);
+    PlayerMove getMove(final PlayBoard playBoard, final Player player);
 
 }

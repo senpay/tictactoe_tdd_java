@@ -9,9 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -58,11 +56,11 @@ public class PlayBoardTest {
 
     @Test
     public void getValidMovesShouldReturnAllBoardInCaseBoardEmpty() throws Exception {
-        List<PlayerMove> validMoves = playBoard.getValidMoves();
+        Set<PlayerMove> validMoves = playBoard.getValidMoves();
 
         assertNotNull(validMoves);
         //creating list of valid moves...
-        final List<PlayerMove> expectedValidMoves = new ArrayList<>();
+        final Set<PlayerMove> expectedValidMoves = new HashSet<>();
         expectedValidMoves.add(new PlayerMove(0, 0));
         expectedValidMoves.add(new PlayerMove(0, 1));
         expectedValidMoves.add(new PlayerMove(0, 2));
@@ -90,10 +88,10 @@ public class PlayBoardTest {
         playBoard.setPlayField(2, 1, PlayField.X);
         playBoard.setPlayField(2, 2, PlayField.O);
 
-        List<PlayerMove> validMoves = playBoard.getValidMoves();
+        Set<PlayerMove> validMoves = playBoard.getValidMoves();
 
         assertNotNull(validMoves);
-        assertEquals(Collections.emptyList(), validMoves);
+        assertEquals(Collections.emptySet(), validMoves);
     }
 
     @Test
@@ -108,11 +106,11 @@ public class PlayBoardTest {
         playBoard.setPlayField(2, 0, PlayField.O);
         playBoard.setPlayField(2, 1, PlayField.X);
 
-        List<PlayerMove> validMoves = playBoard.getValidMoves();
+        Set<PlayerMove> validMoves = playBoard.getValidMoves();
 
         assertNotNull(validMoves);
         //creating list of valid moves...
-        final List<PlayerMove> expectedValidMoves = new ArrayList<>();
+        final Set<PlayerMove> expectedValidMoves = new HashSet<>();
         expectedValidMoves.add(new PlayerMove(0, 0));
         expectedValidMoves.add(new PlayerMove(1, 0));
         expectedValidMoves.add(new PlayerMove(2, 2));

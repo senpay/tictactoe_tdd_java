@@ -1,10 +1,7 @@
 package gmail.alexspush.model;
 
-import gmail.alexspush.model.ai.ComputerPlayer;
-import gmail.alexspush.model.ai.MiniMaxComputerPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlayBoard {
 
@@ -14,6 +11,14 @@ public class PlayBoard {
 
     public PlayBoard() {
         clean();
+    }
+
+    public PlayBoard(final PlayBoard playBoard) {
+        for (int i = 0; i < playBoard.SIZE; i++) {
+            for (int j = 0; j < playBoard.SIZE; j++) {
+                this.playFields[i][j] = playBoard.getPlayField(i, j);
+            }
+        }
     }
 
     public PlayField getPlayField(final int x, final int y) {
@@ -70,19 +75,17 @@ public class PlayBoard {
         return true;
     }
 
-    public List<PlayerMove> getValidMoves() {
-        List<PlayerMove> validMoves = new ArrayList<>();
+    public Set<PlayerMove> getValidMoves() {
+        Set<PlayerMove> validMoves = new HashSet<>();
         for (int x = 0; x < PlayBoard.SIZE; x++) {
             for (int y = 0; y < PlayBoard.SIZE; y++) {
-                if(getPlayField(x, y) == PlayField.EMPTY) {
+                if (getPlayField(x, y) == PlayField.EMPTY) {
                     validMoves.add(new PlayerMove(x, y));
                 }
             }
         }
         return validMoves;
     }
-
-
 
     private boolean hasPlayerWon(final Player player) {
         return hasPlayerFilledAnyRow(player) || hasPlayerFilledAnyColumn(player) || hasPlayerFilledAnyDiagonal(player);
@@ -161,4 +164,5 @@ public class PlayBoard {
         //If we haven't returned yet - than non diagonal was filled, returing false
         return false;
     }
+
 }
