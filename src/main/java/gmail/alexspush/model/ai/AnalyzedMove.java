@@ -8,7 +8,7 @@ import gmail.alexspush.model.PlayerMove;
  * 6.3.18
  */
 public class AnalyzedMove {
-    private int weight = 100;
+    private int weight = 0;
     private final PlayerMove move;
 
     public AnalyzedMove(final PlayerMove move) {
@@ -25,6 +25,10 @@ public class AnalyzedMove {
 
     public void significantlyDecreaseWeight() {
         weight -= 100;
+    }
+
+    public void significantlyIncreaseWeight() {
+        weight += 100;
     }
 
     public PlayerMove getMove() {
@@ -56,4 +60,6 @@ public class AnalyzedMove {
         result = 31 * result + (getMove() != null ? getMove().hashCode() : 0);
         return result;
     }
+
+
 }

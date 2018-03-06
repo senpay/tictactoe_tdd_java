@@ -47,22 +47,24 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
     //TODO: Horrible method, needs refactoring
     private static void analyzeMoves(final AnalyzedMove moveUnderAnalyzis, final PlayBoard playBoardStatusToAnalyze,
                                      final Player playerThatShouldWin, final Player currentPlayer) {
+        //Decrease weight for each iterationg for move
+        moveUnderAnalyzis.decreaseWeight();
         final Set<PlayerMove> validMoves = playBoardStatusToAnalyze.getValidMoves();
         for (PlayerMove validMove : validMoves) {
             final PlayBoard hypotheticalPlayBoard = new PlayBoard(playBoardStatusToAnalyze);
             hypotheticalPlayBoard.setPlayField(validMove.x, validMove.y, currentPlayer.getPlayFieldValue());
             final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
 
-            if (hypotheticalBoardStatus.getWinner().isPresent() &&
-                    playerThatShouldWin != hypotheticalBoardStatus.getWinner().get()) {
-                //We lost
-                moveUnderAnalyzis.significantlyDecreaseWeight();
-                //game is over, no need for further analysis
-                return;
-            } else if (hypotheticalBoardStatus == BoardStatus.IN_PROGRESS) {
-                moveUnderAnalyzis.decreaseWeight();
-            } else if (hypotheticalBoardStatus == BoardStatus.DRAW) {
-                moveUnderAnalyzis.decreaseWeight();
+            if(hypotheticalBoardStatus != BoardStatus.IN_PROGRESS) {
+                if (hypotheticalBoardStatus.getWinner().isPresent() &&
+                        playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
+                    //We won
+                    moveUnderAnalyzis.significantlyIncreaseWeight();
+                } else if (hypotheticalBoardStatus.getWinner().isPresent() &&
+                        playerThatShouldWin != hypotheticalBoardStatus.getWinner().get()) {
+                    //We lost
+                    moveUnderAnalyzis.significantlyDecreaseWeight();
+                }
                 //game is over, no need for further analysis
                 return;
             }
@@ -83,7 +85,19 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
         for (AnalyzedMove moveToAnalyze : movesToAnalyze) {
             final PlayBoard hypotheticalPlayBoard = new PlayBoard(currentPlayBoard);
             final PlayerMove playerMove = moveToAnalyze.getMove();
-            hypotheticalPlayBoard.setPlayField(playerMove.x, playerMove.y, playerThatShouldWin.getPlayFieldValue());
+            hypotheticalPlayBoard.setPlayField(playerMove.x, playerMove.y,
+                    playerThatShouldWin.getPlayFieldValue());
+            final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
+
+            if (hypotheticalBoardStatus.getWinner().isPresent() &&
+                    playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
+                //We won
+                moveToAnalyze.significantlyIncreaseWeight();
+                //game is over, no need for further analysis
+                return;
+            }
+
+            //If we don't win in this turn - iterate on all possibilities
             analyzeMoves(moveToAnalyze, hypotheticalPlayBoard, playerThatShouldWin,
                     playerThatShouldWin.getRival());
 
