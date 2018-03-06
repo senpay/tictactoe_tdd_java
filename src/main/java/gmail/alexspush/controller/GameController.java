@@ -66,8 +66,10 @@ public class GameController {
         @Override
         public void moveActionPerformed(final int x, final int y, final Player player) {
             playBoard.setPlayField(x, y, player.getPlayFieldValue());
-            final PlayerMove computerPlayerMove = computerPlayer.getMove(playBoard, Player.O);
-            playBoard.setPlayField(computerPlayerMove.x, computerPlayerMove.y, player.getRivalPlayFieldValue());
+            if(playBoard.getStatus() == BoardStatus.IN_PROGRESS) {
+                final PlayerMove computerPlayerMove = computerPlayer.getMove(playBoard, Player.O);
+                playBoard.setPlayField(computerPlayerMove.x, computerPlayerMove.y, player.getRivalPlayFieldValue());
+            }
         }
 
         @Override

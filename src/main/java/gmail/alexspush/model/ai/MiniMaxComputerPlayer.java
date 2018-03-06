@@ -46,9 +46,8 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
 
     //TODO: Horrible method, needs refactoring
     private static void analyzeMoves(final AnalyzedMove moveUnderAnalyzis, final PlayBoard playBoardStatusToAnalyze,
-                                     final Player playerThatShouldWin, final Player currentPlayer) {
+                                     final Player playerThatShouldWin, final Player currentPlayer, int depth) {
         //Decrease weight for each iterationg for move
-        moveUnderAnalyzis.decreaseWeight();
         final Set<PlayerMove> validMoves = playBoardStatusToAnalyze.getValidMoves();
         for (PlayerMove validMove : validMoves) {
             final PlayBoard hypotheticalPlayBoard = new PlayBoard(playBoardStatusToAnalyze);
@@ -59,18 +58,18 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
                 if (hypotheticalBoardStatus.getWinner().isPresent() &&
                         playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
                     //We won
-                    moveUnderAnalyzis.significantlyIncreaseWeight();
+                    moveUnderAnalyzis.setWeight(100 - depth);
                 } else if (hypotheticalBoardStatus.getWinner().isPresent() &&
                         playerThatShouldWin != hypotheticalBoardStatus.getWinner().get()) {
                     //We lost
-                    moveUnderAnalyzis.significantlyDecreaseWeight();
+                    moveUnderAnalyzis.setWeight(depth - 100);
                 }
                 //game is over, no need for further analysis
                 return;
             }
 
             analyzeMoves(moveUnderAnalyzis, hypotheticalPlayBoard, playerThatShouldWin,
-                    playerThatShouldWin.getRival());
+                    playerThatShouldWin.getRival(), depth++);
         }
     }
 
@@ -92,14 +91,14 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
             if (hypotheticalBoardStatus.getWinner().isPresent() &&
                     playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
                 //We won
-                moveToAnalyze.significantlyIncreaseWeight();
+                moveToAnalyze.setWeight(10);
                 //game is over, no need for further analysis
                 return;
             }
 
             //If we don't win in this turn - iterate on all possibilities
             analyzeMoves(moveToAnalyze, hypotheticalPlayBoard, playerThatShouldWin,
-                    playerThatShouldWin.getRival());
+                    playerThatShouldWin.getRival(), 1);
 
         }
     }

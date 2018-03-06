@@ -19,16 +19,8 @@ public class AnalyzedMove {
         return weight;
     }
 
-    public void decreaseWeight() {
-        weight--;
-    }
-
-    public void significantlyDecreaseWeight() {
-        weight -= 100;
-    }
-
-    public void significantlyIncreaseWeight() {
-        weight += 100;
+    public void setWeight(final int weight) {
+        this.weight = weight;
     }
 
     public PlayerMove getMove() {
