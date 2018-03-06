@@ -17,6 +17,7 @@ import java.util.Set;
  */
 public class MiniMaxComputerPlayer implements ComputerPlayer {
 
+    private static final int WEIGHT = 10;
     private List<AnalyzedMove> movesToAnalyze;
 
     protected static List<AnalyzedMove> getMovesToAnalyze(final PlayBoard playBoard) {
@@ -58,18 +59,18 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
                 if (hypotheticalBoardStatus.getWinner().isPresent() &&
                         playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
                     //We won
-                    moveUnderAnalyzis.setWeight(100 - depth);
+                    moveUnderAnalyzis.setWeight(WEIGHT - depth);
                 } else if (hypotheticalBoardStatus.getWinner().isPresent() &&
                         playerThatShouldWin != hypotheticalBoardStatus.getWinner().get()) {
                     //We lost
-                    moveUnderAnalyzis.setWeight(depth - 100);
+                    moveUnderAnalyzis.setWeight(depth - WEIGHT);
                 }
                 //game is over, no need for further analysis
                 return;
             }
 
             analyzeMoves(moveUnderAnalyzis, hypotheticalPlayBoard, playerThatShouldWin,
-                    playerThatShouldWin.getRival(), depth++);
+                    currentPlayer.getRival(), depth++);
         }
     }
 
@@ -91,7 +92,7 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
             if (hypotheticalBoardStatus.getWinner().isPresent() &&
                     playerThatShouldWin == hypotheticalBoardStatus.getWinner().get()) {
                 //We won
-                moveToAnalyze.setWeight(10);
+                moveToAnalyze.setWeight(WEIGHT);
                 //game is over, no need for further analysis
                 return;
             }

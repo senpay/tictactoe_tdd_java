@@ -84,6 +84,24 @@ public class MiniMaxComputerPlayerTest {
         assertEquals(new PlayerMove(0, 2), playerMove);
     }
 
+    @Test
+    public void shouldReturnMoveThatLeadsToVictoryFaster() {
+        final ComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
+        final PlayBoard playBoard = new PlayBoard();
+        //[ . o . ]
+        //[ . x o ]
+        //[ . x . ]
+        //Player X should go now
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(1, 1, PlayField.X);
+        playBoard.setPlayField(1, 2, PlayField.O);
+        playBoard.setPlayField(2, 1, PlayField.X);
+
+        final PlayerMove playerMove = computerPlayer.getMove(playBoard, Player.X);
+
+        assertNotNull(playerMove);
+        assertEquals(new PlayerMove(2, 2), playerMove);
+    }
 
 
     @Test
