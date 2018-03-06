@@ -100,7 +100,10 @@ public class MiniMaxComputerPlayerTest {
         final PlayerMove playerMove = computerPlayer.getMove(playBoard, Player.X);
 
         assertNotNull(playerMove);
-        assertEquals(new PlayerMove(2, 2), playerMove);
+        List<PlayerMove> possibleMoves = new ArrayList<>();
+        possibleMoves.add(new PlayerMove(2, 2));
+        possibleMoves.add(new PlayerMove(2, 0));
+        assertTrue(possibleMoves.contains(playerMove));
     }
 
 
