@@ -43,16 +43,6 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
         return bestMove.get().getMove();
     }
 
-    private static List<AnalyzedMove> analyzeMoves(final PlayBoard currentPlayBoard, final Player playerThatShouldWin) {
-        List<AnalyzedMove> movesToAnalyze = getMovesToAnalyze(currentPlayBoard);
-        final MoveAnalyzer moveAnalyzer = new MoveAnalyzer(playerThatShouldWin);
-        for (AnalyzedMove moveToAnalyze : movesToAnalyze) {
-            final int weight = moveAnalyzer.getMoveWeight(moveToAnalyze.getMove(), currentPlayBoard);
-            moveToAnalyze.setWeight(weight);
-        }
-        return movesToAnalyze;
-    }
-
     private static PlayBoard getHypatheticalPlayBoard(final PlayBoard currentPlayBoard, final Player playerToMakeMove,
                                                       final PlayerMove nextMove) {
         final PlayBoard hypotheticalPlayBoard = new PlayBoard(currentPlayBoard);
@@ -63,7 +53,6 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
     @Override
     public PlayerMove getMove(final PlayBoard currentPlayBoard, final Player playerThatShouldWin) {
         final List<AnalyzedMove> analyzedMoves = getMovesToAnalyze(currentPlayBoard);
-        final List<AnalyzedMove> safeMoves = new ArrayList<>();
         for (AnalyzedMove analyzedMove : analyzedMoves) {
             final PlayerMove move = analyzedMove.getMove();
             final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard, playerThatShouldWin,
@@ -72,15 +61,15 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
 
             if (hypotheticalBoardStatus != BoardStatus.IN_PROGRESS &&
                     hypotheticalBoardStatus.hasPlayerWon(playerThatShouldWin)) {
+                analyzedMove.setWeight(10);
                 return move;
             } else {
-                if (!isNextRivalMoveLeadsToFailure(hypotheticalPlayBoard, playerThatShouldWin.getRival())) {
-                    safeMoves.add(analyzedMove);
+                if (isNextRivalMoveLeadsToFailure(hypotheticalPlayBoard, playerThatShouldWin.getRival())) {
+                    analyzedMove.setWeight(-10);
                 }
             }
         }
-        return safeMoves.get(0).getMove();
-        //return getMoveWithMaximumScore(analyzedMoves);
+        return getMoveWithMaximumScore(analyzedMoves);
     }
 
     private boolean isNextRivalMoveLeadsToFailure(final PlayBoard currentPlayBoard, final Player rival) {
