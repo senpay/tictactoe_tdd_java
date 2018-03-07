@@ -1,5 +1,6 @@
 package gmail.alexspush.model.ai;
 
+import gmail.alexspush.model.BoardStatus;
 import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.Player;
 import gmail.alexspush.model.PlayerMove;
@@ -52,10 +53,49 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
         return movesToAnalyze;
     }
 
+    private static PlayBoard getHypatheticalPlayBoard(final PlayBoard currentPlayBoard, final Player playerToMakeMove,
+                                                      final PlayerMove nextMove) {
+        final PlayBoard hypotheticalPlayBoard = new PlayBoard(currentPlayBoard);
+        hypotheticalPlayBoard.setPlayField(nextMove.x, nextMove.y, playerToMakeMove.getPlayFieldValue());
+        return hypotheticalPlayBoard;
+    }
+
     @Override
     public PlayerMove getMove(final PlayBoard currentPlayBoard, final Player playerThatShouldWin) {
-        List<AnalyzedMove> analyzedMoves = analyzeMoves(currentPlayBoard, playerThatShouldWin);
-        return getMoveWithMaximumScore(analyzedMoves);
+        final List<AnalyzedMove> analyzedMoves = getMovesToAnalyze(currentPlayBoard);
+        final List<AnalyzedMove> safeMoves = new ArrayList<>();
+        for (AnalyzedMove analyzedMove : analyzedMoves) {
+            final PlayerMove move = analyzedMove.getMove();
+            final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard, playerThatShouldWin,
+                    move);
+            final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
+
+            if (hypotheticalBoardStatus != BoardStatus.IN_PROGRESS &&
+                    hypotheticalBoardStatus.hasPlayerWon(playerThatShouldWin)) {
+                return move;
+            } else {
+                if (!isNextRivalMoveLeadsToFailure(hypotheticalPlayBoard, playerThatShouldWin.getRival())) {
+                    safeMoves.add(analyzedMove);
+                }
+            }
+        }
+        return safeMoves.get(0).getMove();
+        //return getMoveWithMaximumScore(analyzedMoves);
     }
+
+    private boolean isNextRivalMoveLeadsToFailure(final PlayBoard currentPlayBoard, final Player rival) {
+        for (PlayerMove rivalMove : currentPlayBoard.getValidMoves()) {
+            final PlayBoard hypotheticalRivalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard,
+                    rival, rivalMove);
+            final BoardStatus hypotheticalRivalPlayBoardStatus = hypotheticalRivalPlayBoard.getStatus();
+
+            if (hypotheticalRivalPlayBoardStatus != BoardStatus.IN_PROGRESS &&
+                    hypotheticalRivalPlayBoardStatus.hasPlayerWon(rival)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
