@@ -53,29 +53,60 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
     @Override
     public PlayerMove getMove(final PlayBoard currentPlayBoard, final Player playerThatShouldWin) {
         final List<AnalyzedMove> analyzedMoves = getMovesToAnalyze(currentPlayBoard);
-        for (AnalyzedMove analyzedMove : analyzedMoves) {
-            final PlayerMove move = analyzedMove.getMove();
-            final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard, playerThatShouldWin,
-                    move);
-            final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
-
-            if (hypotheticalBoardStatus != BoardStatus.IN_PROGRESS &&
-                    hypotheticalBoardStatus.hasPlayerWon(playerThatShouldWin)) {
-                analyzedMove.setWeight(10);
-                return move;
-            } else {
-                if (isNextRivalMoveLeadsToFailure(hypotheticalPlayBoard, playerThatShouldWin.getRival())) {
-                    analyzedMove.setWeight(-10);
-                }
-            }
-        }
+        analyzeMoves(currentPlayBoard, playerThatShouldWin, analyzedMoves, 10);
         return getMoveWithMaximumScore(analyzedMoves);
     }
 
+    private void analyzeMoves(final PlayBoard currentPlayBoard, final Player playerThatShouldWin,
+        final List<AnalyzedMove> analyzedMoves, final int coefficent) {
+        for (AnalyzedMove analyzedMove : analyzedMoves) {
+            analyzeMove(currentPlayBoard, playerThatShouldWin, analyzedMove, analyzedMove, coefficent);
+        }
+    }
+
+    private void analyzeMoves(final PlayBoard currentPlayBoard, final Player playerThatShouldWin,
+        final List<AnalyzedMove> analyzedMoves, final AnalyzedMove originalMove, final int coefficent) {
+        for (AnalyzedMove analyzedMove : analyzedMoves) {
+            analyzeMove(currentPlayBoard, playerThatShouldWin, analyzedMove, originalMove, coefficent);
+        }
+    }
+
+    private void analyzeMove(final PlayBoard currentPlayBoard, final Player playerThatShouldWin,
+        final AnalyzedMove analyzedMove, final AnalyzedMove originalMove,
+        final int coefficent) {
+        final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard, playerThatShouldWin,
+                analyzedMove.getMove());
+        final int score = analyzeMove(hypotheticalPlayBoard, playerThatShouldWin, coefficent);
+        if (score != 0) {
+            originalMove.setWeight(score);
+        } else {
+            for (PlayBoard hypotheticalPlayBoardAfterRivalMove : getHypotheticalPlayBoards(hypotheticalPlayBoard,
+                    playerThatShouldWin.getRival())) {
+                final List<AnalyzedMove> hypotheticalMovesToAnalyze = getMovesToAnalyze(
+                        hypotheticalPlayBoardAfterRivalMove);
+                analyzeMoves(hypotheticalPlayBoardAfterRivalMove, playerThatShouldWin, hypotheticalMovesToAnalyze,
+                        originalMove, coefficent - 1);
+            }
+        }
+    }
+
+    public int analyzeMove(final PlayBoard hypotheticalPlayBoard, final Player playerThatShouldWin,
+            final int coefficent) {
+        final BoardStatus hypotheticalBoardStatus = hypotheticalPlayBoard.getStatus();
+
+        if (hypotheticalBoardStatus != BoardStatus.IN_PROGRESS
+                && hypotheticalBoardStatus.hasPlayerWon(playerThatShouldWin)) {
+            return coefficent;
+        } else {
+            if (isNextRivalMoveLeadsToFailure(hypotheticalPlayBoard, playerThatShouldWin.getRival())) {
+                return -coefficent;
+            }
+        }
+        return 0;
+    }
+
     private boolean isNextRivalMoveLeadsToFailure(final PlayBoard currentPlayBoard, final Player rival) {
-        for (PlayerMove rivalMove : currentPlayBoard.getValidMoves()) {
-            final PlayBoard hypotheticalRivalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard,
-                    rival, rivalMove);
+         for (PlayBoard hypotheticalRivalPlayBoard : getHypotheticalPlayBoards(currentPlayBoard, rival)) {
             final BoardStatus hypotheticalRivalPlayBoardStatus = hypotheticalRivalPlayBoard.getStatus();
 
             if (hypotheticalRivalPlayBoardStatus != BoardStatus.IN_PROGRESS &&
@@ -84,6 +115,16 @@ public class MiniMaxComputerPlayer implements ComputerPlayer {
             }
         }
         return false;
+    }
+
+    private List<PlayBoard> getHypotheticalPlayBoards(final PlayBoard currentPlayBoard, final Player player) {
+        final List<PlayBoard> hypotheticalPlayBoards = new ArrayList<>();
+        for (PlayerMove playerMove : currentPlayBoard.getValidMoves()) {
+            final PlayBoard hypotheticalPlayBoard = getHypatheticalPlayBoard(currentPlayBoard,
+                    player, playerMove);
+                    hypotheticalPlayBoards.add(hypotheticalPlayBoard);
+        }
+        return hypotheticalPlayBoards;
     }
 
 

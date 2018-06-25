@@ -4,11 +4,9 @@ import gmail.alexspush.model.PlayBoard;
 import gmail.alexspush.model.PlayField;
 import gmail.alexspush.model.Player;
 import gmail.alexspush.model.PlayerMove;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -109,7 +107,6 @@ public class MiniMaxComputerPlayerTest {
         assertEquals(new PlayerMove(0, 2), playerMove);
     }
 
-    @Ignore
     @Test
     public void shouldReturnMoveThatLeadsToVictoryFaster() {
         final ComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
@@ -132,6 +129,54 @@ public class MiniMaxComputerPlayerTest {
         assertTrue(possibleMoves.contains(playerMove));
     }
 
+    @Test
+    public void shouldReturnMoveThatLeadsToVictoryFasterAgain() {
+        final ComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
+        final PlayBoard playBoard = new PlayBoard();
+        //[ x o x ]
+        //[ . . o ]
+        //[ . . x ]
+        //Player X should go now
+        playBoard.setPlayField(0, 0, PlayField.X);
+        playBoard.setPlayField(0, 1, PlayField.O);
+        playBoard.setPlayField(0, 2, PlayField.X);
+        playBoard.setPlayField(1, 2, PlayField.O);
+        playBoard.setPlayField(2, 2, PlayField.X);        
+
+        final PlayerMove playerMove = computerPlayer.getMove(playBoard, Player.X);
+
+        assertNotNull(playerMove);
+        assertEquals(new PlayerMove(1, 1), playerMove);
+    }
+
+    @Test
+    public void shouldReturnSomeMoveForStartedBoard() {
+        final ComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
+        final PlayBoard playBoard = new PlayBoard();
+        //[ . . . ]
+        //[ . x . ]
+        //[ . . . ]
+        //Player X should go now
+        playBoard.setPlayField(1, 1, PlayField.X);
+
+        final PlayerMove playerMove = computerPlayer.getMove(playBoard, Player.O);
+
+        assertNotNull(playerMove);
+    }
+
+    @Test
+    public void shouldReturnSomeMoveForEmptyBoard() {
+        final ComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
+        final PlayBoard playBoard = new PlayBoard();
+        //[ . . . ]
+        //[ . . . ]
+        //[ . . . ]
+        //Player X should go now
+
+        final PlayerMove playerMove = computerPlayer.getMove(playBoard, Player.X);
+
+        assertNotNull(playerMove);
+    }
 
     @Test
     public void getMovesToAnalyzeShouldReturnAllAvailableMoves() {
