@@ -2,7 +2,7 @@ package gmail.alexspush.model;
 
 /**
  * Created by Alexander Pushkarev.
- * apushkarev@workfusion.com
+ * alexspush@gmail.com
  * 2.3.18
  */
 public class PlayerMove {

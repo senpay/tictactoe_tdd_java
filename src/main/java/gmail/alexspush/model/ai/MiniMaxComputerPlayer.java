@@ -12,12 +12,9 @@ import java.util.Set;
 
 /**
  * Created by Alexander Pushkarev.
- * apushkarev@workfusion.com
+ * alexspush@gmail.com
  * 2.3.18
  */
-
-//TODO: implementation is wrong, need to reimplement (see https://www.neverstopbuilding.com/blog/2013/12/13/tic-tac-toe-understanding-the-minimax-algorithm13)
-
 public class MiniMaxComputerPlayer implements ComputerPlayer {
 
     protected static List<AnalyzedMove> getMovesToAnalyze(final PlayBoard playBoard) {
