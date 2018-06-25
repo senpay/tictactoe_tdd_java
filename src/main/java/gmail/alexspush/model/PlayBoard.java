@@ -14,8 +14,8 @@ public class PlayBoard {
     }
 
     public PlayBoard(final PlayBoard playBoard) {
-        for (int i = 0; i < playBoard.SIZE; i++) {
-            for (int j = 0; j < playBoard.SIZE; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 this.playFields[i][j] = playBoard.getPlayField(i, j);
             }
         }
