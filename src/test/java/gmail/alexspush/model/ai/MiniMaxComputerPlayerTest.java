@@ -180,7 +180,6 @@ public class MiniMaxComputerPlayerTest {
 
     @Test
     public void getMovesToAnalyzeShouldReturnAllAvailableMoves() {
-        final MiniMaxComputerPlayer computerPlayer = new MiniMaxComputerPlayer();
         final PlayBoard playBoard = new PlayBoard();
         //[ o . x ]
         //[ . x . ]
@@ -191,7 +190,7 @@ public class MiniMaxComputerPlayerTest {
         playBoard.setPlayField(1, 1, PlayField.X);
         playBoard.setPlayField(2, 1, PlayField.O);
 
-        final List<AnalyzedMove> analyzedMoves = computerPlayer.getMovesToAnalyze(playBoard);
+        final List<AnalyzedMove> analyzedMoves = MiniMaxComputerPlayer.getMovesToAnalyze(playBoard);
 
         final List<AnalyzedMove> expectedMoves = new ArrayList<>();
         final Set<PlayerMove> validMoves = playBoard.getValidMoves();
