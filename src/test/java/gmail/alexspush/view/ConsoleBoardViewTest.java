@@ -161,9 +161,5 @@ public class ConsoleBoardViewTest {
         public String getWrittenOutput() {
             return builder.toString();
         }
-
-        public void clearOutput() {
-            builder = new StringBuilder();
-        }
     }
 }
